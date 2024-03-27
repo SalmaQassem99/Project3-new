@@ -1,6 +1,7 @@
 const infoIcon = document.querySelector(".info.icon");
 const popupModal = document.querySelector(".popup");
 const popupOverlay = document.querySelector(".pop-overlay");
+const game = document.querySelector(".game");
 const playButton = document.querySelector(".play");
 const cardWrapper = document.querySelector(".game .cardContainer");
 const scoreWrapper = document.querySelector(".game .scoreWrapper");
@@ -11,8 +12,6 @@ const storyPage = document.querySelector(".body-content .story-page");
 const board = document.querySelector(".story-page .board");
 const boardItems = document.querySelectorAll(".board-item .card-number");
 const successModal = document.querySelector(".success-wrapper");
-const closeButton = document.querySelector(".closeModal");
-const overlay = document.querySelector(".overlay");
 const arrows = document.querySelectorAll(".game .body .arrow");
 const pauseButton = document.querySelector(".game .pause.icon");
 const iconsArr = [...arrows, pauseButton];
@@ -38,9 +37,14 @@ playButton.addEventListener("click", () => {
     cardWrapper.classList.remove("hide");
     cardWrapper.style.visibility = "hidden";
     body.classList.add("show");
+    pauseButton.style.visibility = "visible";
     scoreWrapper.style.visibility = "visible";
     score.textContent = `0/${cardItems.length}`;
     storyPage.classList.add("show");
+    const cards = document.querySelector(".cards-wrapper .cards");
+    for (let i = cards.children.length; i >= 0; i--) {
+      cards.appendChild(cards.children[(Math.random() * i) | 0]);
+    }
     cardItems.forEach((card) => {
       card.classList.add("animate");
       card.addEventListener("animationend", () => {
@@ -87,7 +91,6 @@ boardItems.forEach((boardItem) => {
       `.cards-wrapper .cards .card-item[data-index="${imgId}"] img`
     );
     if (index === imgId) {
-      document.querySelector("#correct-audio").play();
       const imgSrc = img.src;
       counter += 1;
       score.textContent = `${counter}/${boardItems.length}`;
@@ -112,17 +115,19 @@ boardItems.forEach((boardItem) => {
       numberItem.addEventListener("animationend", () => {
         numberItem.classList.remove("show");
       });
-      if (counter === boardItems.length) {
-        const text = document.querySelector(".text-card .score-text");
-        text.textContent = `${counter}/${boardItems.length}`;
-        text.setAttribute("text", `${counter}/${boardItems.length}`);
-        successModal.style.visibility = "visible";
-        overlay.classList.add("show");
-        successModal.classList.add("show");
-        setTimeout(() => {
+      const audio = document.querySelector("#correct-audio");
+      audio.play();
+      audio.addEventListener("ended", () => {
+        if (counter === boardItems.length) {
+          const text = document.querySelector(".text-card .score-text");
+          text.textContent = `${counter}/${boardItems.length}`;
+          text.setAttribute("text", `${counter}/${boardItems.length}`);
+          successModal.style.visibility = "visible";
+          overlay.classList.add("show");
+          successModal.classList.add("show");
           document.querySelector(`audio[id="success"]`).play();
-        }, 500);
-      }
+        }
+      });
     } else {
       document.querySelector("#wrong-audio").play();
       img.parentElement.classList.add("vibrate");
@@ -131,27 +136,6 @@ boardItems.forEach((boardItem) => {
       });
     }
   });
-});
-const addCloseAnimation = () => {
-  closeButton.classList.add("animate");
-  closeButton.addEventListener("animationend", () => {
-    closeButton.classList.remove("animate");
-  });
-  successModal.classList.add("hide");
-  successModal.style.visibility = "hidden";
-  overlay.classList.remove("show");
-};
-document.addEventListener("click", function (event) {
-  const isVisible =
-    window.getComputedStyle(successModal).visibility === "visible";
-  var isClickInside =
-    successModal.contains(event.target) || event.target === closeButton;
-  if (!isClickInside && isVisible) {
-    addCloseAnimation();
-  }
-});
-closeButton.addEventListener("click", () => {
-  addCloseAnimation();
 });
 const hideItems = () => {
   iconsArr.forEach((item) => {
@@ -169,7 +153,8 @@ const resetTimer = () => {
 document.addEventListener("mousemove", resetTimer);
 document.addEventListener("touchstart", resetTimer);
 const checkScreen = () => {
-  const isMobile = window.innerWidth < 768;
+  const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+  const isMobile = window.innerWidth < 768 && isPortrait;
   return isMobile;
 };
 window.addEventListener("load", () => {
@@ -178,6 +163,8 @@ window.addEventListener("load", () => {
   if (is_mobile) {
     popupModal.style.visibility = "visible";
     popupOverlay.style.visibility = "visible";
+  } else {
+    game.style.visibility = "visible";
   }
 });
 document.addEventListener("contextmenu", function (event) {
@@ -189,13 +176,17 @@ document.addEventListener("contextmenu", function (event) {
 });
 window.addEventListener("orientationchange", function () {
   const is_mobile = checkScreen();
-  if (is_mobile) {
-    if (window.orientation === 90 || window.orientation === -90) {
+  if (window.orientation === 90 || window.orientation === -90) {
+    if (is_mobile) {
+      game.style.visibility = "visible";
       popupModal.style.visibility = "hidden";
       popupOverlay.style.visibility = "hidden";
     } else {
       popupModal.style.visibility = "visible";
       popupOverlay.style.visibility = "visible";
     }
+  } else {
+    popupModal.style.visibility = "visible";
+    popupOverlay.style.visibility = "visible";
   }
 });

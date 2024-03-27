@@ -132,7 +132,7 @@ a {
   max-height: 3rem;
   aspect-ratio: 1;
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   background: linear-gradient(to bottom, #febf47 2%, #f0b700);
   color: #fff;
   font-size: 1.25rem;
@@ -184,6 +184,7 @@ a {
   top: calc(100vh - 3rem);
   transform: translateY(-100%);
   transition: 0.5s;
+  visibility: hidden;
 }
 .icon.pause .fa-solid.hide {
   display: none;
@@ -235,9 +236,16 @@ a {
   padding: 1.5rem;
   position: relative;
   overflow-y: auto;
-  background-image: url("../media/images/background.svg");
   background-size: cover;
   background-position: 50% 100%;
+  visibility: hidden;
+  transform-origin: left top;
+}
+.game.hideGame {
+  animation-name: hideGame;
+  animation-timing-function: linear;
+  animation-duration: 0.7s;
+  animation-iteration-count: 1;
 }
 .game .head {
   height: 12%;
@@ -287,7 +295,7 @@ a {
   color: #000;
 }
 .game .cardContainer {
-  height: 36vh;
+  min-height: 36vh;
   transform-origin: left top;
 }
 .game .cardContainer.hide {
@@ -304,7 +312,7 @@ a {
 .game .cardContainer .card-wrapper .card {
   padding: 3rem 1.5rem;
   position: relative;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.8);
   border: none;
   box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
 }
@@ -351,6 +359,10 @@ a {
 }
 .game .cardContainer .card-wrapper .card .title .first-word:first-letter {
   text-transform: capitalize;
+}
+.game .cardContainer .card-wrapper .card .title .second-line-wrapper {
+  margin: 2.75vh 0;
+  color: #000;
 }
 .game .cardContainer .card-wrapper .card .title .second-line-wrapper .sign {
   color: #9bdcfc;
@@ -706,6 +718,14 @@ a {
   }
   100% {
     transform: translateZ(-1px) scaleX(1);
+  }
+}
+@keyframes hideGame {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
   }
 }
 @keyframes scaleDown {
