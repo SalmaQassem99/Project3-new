@@ -251,7 +251,7 @@ $border: 0.1875rem solid $green-3 !important;
   }
 
   .cardContainer {
-    min-height: 36vh;
+    height: 36vh;
     @extend %fixed-position;
     transform-origin: left top;
 
@@ -268,7 +268,7 @@ $border: 0.1875rem solid $green-3 !important;
       background-color: $white-2;
 
       .card {
-        padding: 3rem 1.5rem;
+        padding: 1.75rem 1.5rem;
         position: relative;
         background-color: $white-7;
         border: none;
